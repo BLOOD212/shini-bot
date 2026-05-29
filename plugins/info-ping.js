@@ -2,9 +2,8 @@ import os from 'os'
 
 let handler = async (m, { conn, usedPrefix }) => {
   try {
-    // Calcolo latenza
+    // Calcolo della latenza di reazione dello Shinigami
     const start = process.hrtime.bigint()
-    // Segna come letto solo se possibile, altrimenti ignora l'errore 403
     await conn.readMessages([m.key]).catch(() => {})
     const end = process.hrtime.bigint()
 
@@ -17,28 +16,25 @@ let handler = async (m, { conn, usedPrefix }) => {
       day: '2-digit', month: '2-digit', year: 'numeric'
     })
 
-    const message = `
-╭━━━━━━•✦•━━━━━━╮
-              ✨ ᴘɪɴɢ ✨
-            ʙʟᴏᴏᴅ-ʙᴏᴛ
-╰━━━━━━•✦•━━━━━━╯
+    // Messaggio estetico in puro stile Ryuk
+    const message = `✒️ *DEATH NOTE SYSTEM* 
+_Misurando il battito del tempo nel mondo degli umani..._
+────────────────────────────
+𓃦 ⏳ *UPTIME:* \`${uptimeStr}\`
+⚡ *LATENZA:* \`${latency} ms\`
+📓 *RISVEGLIO:* \`${activationTime}\`
+────────────────────────────
 
-◈ 𝖴ptim𝖾: \`${uptimeStr}\`
-◈ 𝖫𝖺𝗍𝖾𝗇𝗓𝖺: \`${latency} ms\`
-◈ 𝖠𝗏𝗏𝗂𝗈: \`${activationTime}\`
+💀 *STATO:* Attivo e In Attesa
+🍎 *PROPRIETARIO:* Registro di Blood`.trim()
 
-╭━━━━━━•✦•━━━━━━╮
-   𝖮𝗐𝗇𝖾𝗋: *BLOOD*
-   𝖲𝗍𝖺𝗍𝗈: _Online_
-╰━━━━━━•✦•━━━━━━╯`.trim()
-
-    // Invio con gestione errore per evitare il Forbidden (403)
+    // Invio con gestione di sicurezza contro il Forbidden (403)
     await conn.sendMessage(m.chat, {
       text: message,
       contextInfo: {
         externalAdReply: {
-          title: `ʙʟᴏᴏᴅ ᴘᴇʀғᴏʀᴍᴀɴᴄᴇ ᴄᴏɴᴛʀᴏʟ`,
-          body: `Latenza: ${latency}ms`,
+          title: `R Y U K  P E R F O R M A N C E`,
+          body: `Tempo di reazione: ${latency}ms`,
           mediaType: 1,
           previewType: 0,
           renderLargerThumbnail: false,
@@ -46,13 +42,13 @@ let handler = async (m, { conn, usedPrefix }) => {
         }
       }
     }, { quoted: m }).catch(async (err) => {
-      // Se fallisce l'invio "figo" (403), invia solo il testo semplice
-      console.error("Errore 403 rilevato, invio testo semplice...")
+      // Fallback in testo semplice se i metadati falliscono
+      console.error("[Ryuk-Ping] Errore 403, invio testo standard...")
       await conn.sendMessage(m.chat, { text: message }, { quoted: m })
     })
 
   } catch (e) {
-    console.error("[ERRORE PING]:", e)
+    console.error("[Ryuk-Ping] Errore critico:", e)
   }
 }
 
