@@ -10,9 +10,8 @@ handler.before = async function (m, { conn }) {
     const msgId = m.id || m.key?.id;
 
     // --- AGGIUNTO: Controllo Database ---
-    // Recupera i dati della chat dal database globale
     const chatSettings = global.db.data.chats[chat];
-    
+
     // Se la chat non esiste nel database o l'antidelete è disattivato, 
     // salviamo comunque il messaggio per sicurezza ma non eseguiamo il recupero
     const isAntideleteEnabled = chatSettings?.antidelete;
@@ -21,7 +20,7 @@ handler.before = async function (m, { conn }) {
     // 1. SALVATAGGIO: Salviamo il messaggio in RAM per poterlo recuperare dopo
     if (!m.message?.protocolMessage) {
         msgStorage[msgId] = m;
-        
+
         // Pulizia automatica della RAM: cancella il messaggio dalla memoria dopo 1 ora
         setTimeout(() => {
             if (msgStorage[msgId]) delete msgStorage[msgId];
@@ -39,8 +38,20 @@ handler.before = async function (m, { conn }) {
         if (savedMsg) {
             const user = deletedKey.participant || deletedKey.remoteJid;
 
+            // Messaggio estetico in puro stile Ryuk
+            const text = `✒️ *DEATH NOTE SYSTEM* 
+_Qualcuno ha tentato di cancellare le proprie tracce dal quaderno..._
+────────────────────────────
+💀 *TARGET:* @${user.split('@')[0]}
+🗑️ *EVENTO:* Messaggio Eliminato
+🩸 *AZIONE:* Recupero Forzato
+────────────────────────────
+
+𓃦 ⚠️ *REGOLA DEL QUADERNO:* 
+Ciò che è scritto sul registro rimane impresso. Il tempo non si riavvolge nel mio mondo. Ecco cosa voleva nascondere:`;
+
             await conn.sendMessage(chat, { 
-                text: `🚨 *ANTI-DELETE RILEVATO* 🚨\n\n@${user.split('@')[0]} aveva eliminato questo:`,
+                text,
                 mentions: [user]
             }, { quoted: savedMsg });
 
