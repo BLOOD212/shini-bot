@@ -5,41 +5,40 @@ import { join } from 'path'
 const localImg = join(process.cwd(), 'menu-ia.jpeg');
 
 const emojicategoria = {
-  iatesto: '📝',
-  iaaudio: '🎧',
-  iaimmagini: '🖼️'
+  iatesto: '📓',
+  iaaudio: '🍎',
+  iaimmagini: '❌'
 }
 
 let tags = {
-  'iatesto': '𝐈𝐀 𝐓𝐄𝐒𝐓𝐎',
-  'iaaudio': '𝐈𝐀 𝐀𝐔𝐃𝐈𝐎',
-  'iaimmagini': '𝐈𝐀 𝐈𝐌𝐌𝐀𝐆𝐈𝐍𝐈'
+  'iatesto': '𓃦 ── IA TESTO ── 𓃥',
+  'iaaudio': '𓃦 ── IA AUDIO ── 𓃥',
+  'iaimmagini': '𓃦 ── IA IMMAGINI ── 𓃥'
 }
 
 const defaultMenu = {
   before: `
-┎━━━━━━━━━━━━━━━━━━━┑
-┃   ✧  𝐁𝐋𝐃 - 𝐈𝐍𝐓𝐄𝐋𝐋𝐈𝐆𝐄𝐍𝐂𝐄  ✧   ┃
-┖━━━━━━━━━━━━━━━━━━━┙
-┌───────────────────┐
-  👤 𝚄𝚜𝚎𝚛: %name
-  🏆 𝙻𝚟𝚕: %level
-  🪐 𝚄𝚙𝚝𝚒𝚖𝚎: %uptime
-  👥 𝚄𝚜𝚎𝚛𝚜: %totalreg
-└───────────────────┘
+✒️ *DEATH NOTE SYSTEM* 
+_L'umano il cui nome è scritto su questo menu..._
+────────────────────────────
+💀 *USER:* %name
+🏆 *LEVEL:* %level
+⏱️ *UPTIME:* %uptime
+🍎 *TOTAL USERS:* %totalreg Utenti Registrati
+────────────────────────────
 
-*〘 ᴀᴄᴄᴇssɪɴɢ ɴᴇᴜʀᴀʟ ɴᴇᴛᴡᴏʀᴋ... 〙*
-`.trimStart(),
-  header: '┍━━━〔 %category 〕━━━┑',
-  body: '┇ %emoji  *%cmd*',
-  footer: '┕━━━━━──ׄ──ׅ──ׄ──━━━━━┙\n',
-  after: `_ꜱʏꜱᴛᴇᴍ ɪᴀ ᴏᴘᴇʀᴀᴛɪᴏɴᴀʟ_`
+*PANNELLO DI CONTROLLO:*`.trimStart(),
+
+  header: '\n\n  %category\n  ━━━━━━━━━━━━━━━━━━━━━━━━',
+  body: '  🩸 %cmd',
+  footer: '\n  ━━━━━━━━━━━━━━━━━━━━━━━━',
+  after: `\n\n_Gli umani sono davvero interessanti..._ 🍎`
 }
 
 let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
   try {
     await conn.sendPresenceUpdate('composing', m.chat)
-    
+
     let { level = 0, role = 'User' } = global.db.data.users[m.sender] || {}
     let name = await conn.getName(m.sender) || 'Utente'
     let uptime = clockString(process.uptime() * 1000)
@@ -63,7 +62,6 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
             return menu.help.map(cmd => {
               return defaultMenu.body
                 .replace(/%cmd/g, menu.prefix ? cmd : _p + cmd)
-                .replace(/%emoji/g, emojicategoria[tag] || '🧠')
                 .trim()
             }).join('\n')
           }),
@@ -81,7 +79,7 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
 
     let text = _text.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join('|')})`, 'g'), (_, name) => '' + replace[name])
 
-    await m.react('🧠')
+    await m.react('📓')
 
     // --- INVIO CON IMMAGINE E CONTEXT GRUPPO ---
     await conn.sendMessage(m.chat, {
@@ -91,14 +89,14 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
         mentionedJid: [m.sender],
         forwardedNewsletterMessageInfo: {
           newsletterJid: '120363232743845068@newsletter',
-          newsletterName: "✧ 𝙱𝙻𝙳-𝙱𝙾𝚃 𝙸𝙽𝚃𝙴𝙻𝙻𝙸𝙶𝙴𝙽𝙲𝙴 ✧"
+          newsletterName: "R Y U K  P A G E"
         }
       }
     }, { quoted: m })
 
   } catch (e) {
     console.error(e)
-    conn.reply(m.chat, '❌ Errore nel caricamento del modulo IA.', m)
+    conn.reply(m.chat, '❌ Errore nel caricamento del registro delle intelligenze.', m)
   }
 }
 
