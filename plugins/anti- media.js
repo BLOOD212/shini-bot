@@ -20,7 +20,7 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
   const hasNormalMedia = !!m.message?.imageMessage || !!m.message?.videoMessage
   if (!hasNormalMedia) return false
 
-  // Eliminazione del messaggio
+  // Eliminazione del messaggio dal quaderno
   await conn.sendMessage(m.chat, {
       delete: {
         remoteJid: m.chat,
@@ -30,27 +30,27 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
       },
     }).catch(() => {})
 
-  // Messaggio estetico in stile BLD-BLOOD
-  const header = `⋆｡˚『 ╭ \`ANTIMEDIA SYSTEM\` ╯ 』˚｡⋆`
-  const text = `${header}
-╭
-┃ 🛡️ \`Stato:\` *Protocollo Blood Attivo*
-┃
-┃ 『 👤 』 \`Target:\` @${m.sender.split('@')[0]}
-┃ 『 🖼️ 』 \`Rilevato:\` *Media Permanente*
-┃ 『 🚫 』 \`Azione:\` *Eliminazione immediata*
-┃
-┃ ⚠️ \`Nota:\` In questo gruppo sono ammessi 
-┃ solo media *Visualizza una volta*.
-╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`
+  // Messaggio estetico in puro stile Ryuk
+  const text = `✒️ *DEATH NOTE SYSTEM* 
+_Un file permanente occupa troppo spazio nel mio mondo..._
+────────────────────────────
+💀 *TARGET:* @${m.sender.split('@')[0]}
+🖼️ *RILEVATO:* Media Permanente
+🩸 *AZIONE:* Eliminazione Immediata
+────────────────────────────
+
+𓃦 ⚠️ *REGOLA DEL QUADERNO:* 
+In questo raggio d'azione sono tollerati solo i media *Visualizza una volta*. Gli umani dimenticano in fretta, le immagini permanenti no.
+
+_Gli umani sono davvero interessanti..._ 🍎`
 
   await conn.sendMessage(m.chat, {
       text,
       mentions: [m.sender],
       contextInfo: {
         externalAdReply: {
-          title: 'BLOOD SECURITY',
-          body: 'Restrizione media attiva',
+          title: 'R Y U K  S E C U R I T Y',
+          body: 'Il quaderno ha cancellato la traccia.',
           thumbnailUrl: 'https://qu.ax/TfUj.jpg',
           mediaType: 1
         }
