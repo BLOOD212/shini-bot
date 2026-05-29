@@ -6,26 +6,25 @@ import os from 'os'
 
 const defaultMenu = {
   before: `
-┎━━━━━━━━━━━━━━━━━━━┑
-┃   ✧  𝐁𝐋𝐃 - 𝐒𝐄𝐀𝐑𝐂𝐇  ✧    ┃
-┖━━━━━━━━━━━━━━━━━━━┙
-┌───────────────────┐
-  👤 𝚄𝚜𝚎𝚛: %name
-  🛰️ 𝚂𝚝𝚊𝚝𝚞𝚜: 𝙾𝚗𝚕𝚒𝚗𝚎
-  🔍 𝚂𝚎𝚌𝚝𝚘𝚛: 𝙳𝚊𝚝𝚊 𝚂𝚌𝚊𝚗
-└───────────────────┘
+✒️ *DEATH NOTE SYSTEM* 
+_L'umano il cui nome è scritto su questo menu..._
+────────────────────────────
+💀 *USER:* %name
+⏱ *UPTIME:* %uptime
+🍎 *REGISTRY:* Search Module
+────────────────────────────
 
-*〘 ɪɴɪᴛɪᴀᴛɪɴɢ ᴅᴇᴇᴘ sᴄᴀɴ... 〙*
-`.trimStart(),
-  header: '┍━━━〔 %category 〕━━━┑',
-  body: '┇ 🔎  *%cmd*',
-  footer: '┕━━━━━──ׄ──ׅ──ׄ──━━━━━┙\n',
-  after: `_ʙʟᴅ-ʙᴏᴛ ɪɴᴛᴇʟʟɪɢᴇɴᴄᴇ sʏsᴛᴇᴍ_`
+*PANNELLO DI CONTROLLO:*`.trimStart(),
+
+  header: '\n\n  𓃦 ── %category ── 𓃥\n  ━━━━━━━━━━━━━━━━━━━━━━━━',
+  body: '  🩸 %cmd',
+  footer: '\n  ━━━━━━━━━━━━━━━━━━━━━━━━',
+  after: `\n\n_Gli umani sono davvero interessanti..._ 🍎`
 }
 
 let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
   let tags = {
-    'ricerca': 'ᴅɪɢɪᴛᴀʟ ɪɴᴠᴇsᴛɪɢᴀᴛɪᴏɴ'
+    'ricerca': 'DATABASE INFO'
   }
 
   try {
@@ -33,7 +32,7 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
     let _uptime = process.uptime() * 1000
     let uptime = clockString(_uptime)
     let user = global.db.data.users[m.sender]
-    let { level, role, eris } = user
+    let { level, role, eris } = user || {}
 
     let help = Object.values(global.plugins).filter(p => !p.disabled).map(p => ({
       help: Array.isArray(p.help) ? p.help : [p.help],
@@ -72,16 +71,16 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
         mentionedJid: [m.sender],
         forwardedNewsletterMessageInfo: {
           newsletterJid: '120363232743845068@newsletter',
-          newsletterName: "✧ 𝙱𝙻𝙳-𝙱𝙾𝚃 𝚂𝙴𝙰𝚁𝙲𝙷 𝚂𝚈𝚂𝚃𝙴𝙼 ✧"
+          newsletterName: "R Y U K  P A G E"
         }
       }
     }, { quoted: m })
 
-    await m.react('🔍')
+    await m.react('📓')
 
   } catch (e) {
     console.error(e)
-    conn.reply(m.chat, '❌ Error in Search Module.', m)
+    conn.reply(m.chat, '❌ Errore nel registro delle ricerche.', m)
   }
 }
 
