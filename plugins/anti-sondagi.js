@@ -4,7 +4,7 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
   const chat = global.db.data.chats[m.chat]
   if (!chat?.antisondaggi) return false
 
-  // Immunità per Admin, Blood e il bot
+  // Immunità per Admin, i possessori del quaderno e il bot stesso
   if (m.fromMe || isAdmin || isOwner || isSam) return false
 
   // Verifica se il messaggio è la creazione di un sondaggio
@@ -15,7 +15,7 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
 
   if (!isPollCreation) return false
 
-  // Se il bot è admin, procede con l'eliminazione
+  // Se lo shinigami ha i poteri (isBotAdmin), cancella la traccia dal registro delle anime
   if (isBotAdmin) {
     await conn
       .sendMessage(m.chat, {
@@ -29,25 +29,24 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
       .catch(() => {})
   }
 
-  // Messaggio estetico BLD-BLOOD
-  const header = `⋆｡˚『 ╭ \`ANTISONDAGGI SYSTEM\` ╯ 』˚｡⋆`
-  const footer = `╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`
-  
+  // Configurazione dinamica dell'azione in base ai permessi del bot
   const statusNote = isBotAdmin 
-    ? `┃ 🚫 \`Azione:\` *Eliminazione immediata*` 
-    : `┃ ⚠️ \`Nota:\` Non sono admin, impossibile eliminare.`
+    ? `❌ *AZIONE:* Rimozione Immediata` 
+    : `⚠️ *STATO:* Mancanza di poteri (Non sono Admin), traccia non rimossa.`;
 
-  const text = `${header}
-╭
-┃ 🛡️ \`Stato:\` *Protocollo Blood Attivo*
-┃
-┃ 『 👤 』 \`Target:\` @${m.sender.split('@')[0]}
-┃ 『 📊 』 \`Rilevato:\` *Creazione Sondaggio*
-${statusNote}
-┃
-┃ ⚠️ \`Avviso:\` In questo gruppo l'uso dei 
-┃ sondaggi è severamente vietato.
-╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`
+  // Messaggio estetico in puro stile Ryuk
+  const text = `✒️ *DEATH NOTE SYSTEM* 
+_Gli umani cercano pareri collettivi per rassicurare le proprie anime..._
+────────────────────────────
+💀 *TARGET:* @${m.sender.split('@')[0]}
+📊 *RILEVATO:* Creazione Sondaggio
+🩸 *STATO:* ${statusNote}
+────────────────────────────
+
+𓃦 ⚠️ *REGOLA DEL QUADERNO:* 
+Le votazioni e i sondaggi sono vietati. In questo spazio non esiste democrazia, decide solo chi stringe il patto con gli occhi dello Shinigami. 
+
+_Raccogliere opinioni è così noioso..._ 🍎`;
 
   await conn
     .sendMessage(m.chat, {
@@ -55,8 +54,8 @@ ${statusNote}
       mentions: [m.sender],
       contextInfo: {
         externalAdReply: {
-          title: 'BLOOD SECURITY',
-          body: 'Restrizione sondaggi attiva',
+          title: 'R Y U K  S E C U R I T Y',
+          body: 'Blocco sondaggi universale attivo.',
           thumbnailUrl: 'https://qu.ax/TfUj.jpg',
           mediaType: 1,
           renderLargerThumbnail: true
