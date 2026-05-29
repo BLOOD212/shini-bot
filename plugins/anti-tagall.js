@@ -9,14 +9,11 @@ async function addWarn(conn, m, target, reason, isBotAdmin) {
   user.warns[m.chat] += 1
   const warns = user.warns[m.chat]
   const tag = target.split('@')[0]
-  
-  const header = `⋆｡˚『 ╭ \`SISTEMA ANTITAGALL\` ╯ 』˚｡⋆`
-  const footer = `╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`
 
   if (warns >= 3) {
     user.warns[m.chat] = 0
     await conn.sendMessage(m.chat, {
-      text: `${header}\n\n🚨 *TERMINAZIONE* @${tag}\n\n┃ ⛔ \`Violazione:\` Tag-Massivo ripetuto\n┃ ⚠️ \`Warn:\` *3/3*\n┃ 💀 \`Sanzione:\` *ESPULSIONE*\n\n${footer}`,
+      text: `✒️ *DEATH NOTE SYSTEM* \n_Il limite della pazienza globale è scaduto..._\n────────────────────────────\n💀 *TARGET:* @${tag}\n🚫 *VIOLAZIONE:* Richiamo di massa reiterato\n🩸 *SANZIONE:* CANCELLAZIONE (Espulsione)\n────────────────────────────\n\n_Il tuo nome è stato scritto sulla pagina._ 🍎`,
       mentions: [target]
     }).catch(() => {})
 
@@ -27,7 +24,7 @@ async function addWarn(conn, m, target, reason, isBotAdmin) {
   }
 
   await conn.sendMessage(m.chat, {
-    text: `${header}\n\n🚨 *ATTENZIONE* @${tag}\n\n┃ ⛔ \`Violazione:\` *${reason}*\n┃ ⚠️ \`Warn:\` *${warns}/3*\n┃ 🚫 \`Azione:\` Messaggio rimosso\n\n${footer}`,
+    text: `✒️ *DEATH NOTE SYSTEM* \n_Un tentativo di risveglio forzato ha violato il registro..._\n────────────────────────────\n💀 *TARGET:* @${tag}\n🔗 *RILEVATO:* ${reason}\n🩸 *AMMONIZIONE:* ${warns}/3\n❌ *AZIONE:* Rimozione Immediata\n────────────────────────────\n\n𓃦 _Non disturbare la quiete degli umani con questi trucchetti._ 🍎`,
     mentions: [target]
   }).catch(() => {})
 }
@@ -56,27 +53,28 @@ handler.before = async function (m, { conn, participants, isAdmin, isOwner, isSa
     m.message?.audioMessage?.contextInfo?.mentionedJid ||
     m.message?.stickerMessage?.contextInfo?.mentionedJid ||
     []
-    
+
   const mentionedRaw = [...(m.mentionedJid || []), ...(contextMentioned || [])]
   const mentioned = (mentionedRaw).map(j => conn.decodeJid(j))
-  
+
   if (!mentioned.length) return true
 
   const uniqueMentioned = [...new Set(mentioned)].filter(j => j && j !== botJid)
   const groupSize = Array.isArray(participants) && participants.length ? participants.length : 0
-  
+
   if (!groupSize) return true
 
-  // Soglia di attivazione: se le menzioni superano il 70% dei membri
+  // Soglia di attivazione: se le menzioni superano il 70% dei membri del gruppo
   const ratio = uniqueMentioned.length / groupSize
   if (ratio <= 0.7) return true
 
-  // Esecuzione Protocollo Blood
+  // Rimozione immediata del messaggio abusivo dal registro
   if (isBotAdmin) {
     await conn.sendMessage(m.chat, { delete: m.key }).catch(() => {})
   }
-  
-  await addWarn(conn, m, sender, `Menzioni di massa rilevate (${uniqueMentioned.length}/${groupSize})`, !!isBotAdmin)
+
+  // Esecuzione sanzione e inserimento nel quaderno
+  await addWarn(conn, m, sender, `Tag di massa abusivo (${uniqueMentioned.length}/${groupSize} anime)`, !!isBotAdmin)
 
   return false
 }
