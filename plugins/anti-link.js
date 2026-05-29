@@ -32,7 +32,7 @@ const SHORT_URL_REGEX = new RegExp(
 );
 
 const REQUEST_HEADERS = {
-    'User-Agent': 'BLD-BLOOD/3.0',
+    'User-Agent': 'RYUK-SHINIGAMI/3.0',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'DNT': '1',
     'Connection': 'keep-alive'
@@ -55,32 +55,34 @@ async function containsSuspiciousLink(text) {
 
 async function handleViolation(conn, m, reason, isBotAdmin) {
     const sender = m.sender;
-    const header = `⋆｡˚『 ╭ \`SISTEMA ANTILINK\` ╯ 』˚｡⋆`;
-    const footer = `╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`;
 
-    // Elimina il messaggio
+    // Elimina il messaggio dal registro delle anime
     if (isBotAdmin) {
         try { await conn.sendMessage(m.chat, { delete: m.key }); } catch {}
     }
 
-    const text = `${header}
-╭
-┃ 🚨 \`Stato:\` *Protocollo Blood Attivo*
-┃
-┃ 『 👤 』 \`Target:\` @${sender.split('@')[0]}
-┃ 『 🚫 』 \`Azione:\` *Messaggio Rimosso*
-┃ 『 🔗 』 \`Motivo:\` *${reason}*
-┃
-┃ ⚠️ \`Nota:\` L'invio di link non è autorizzato.
-╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`;
+    // Messaggio estetico in puro stile Ryuk
+    const text = `✒️ *DEATH NOTE SYSTEM* 
+_Un portale esterno sta tentando di distrarre le mie vittime..._
+────────────────────────────
+💀 *TARGET:* @${sender.split('@')[0]}
+🔗 *RILEVATO:* Link Non Autorizzato
+🩸 *MOVENTE:* ${reason}
+❌ *AZIONE:* Rimozione Immediata
+────────────────────────────
+
+𓃦 ⚠️ *REGOLA DEL QUADERNO:* 
+I collegamenti esterni creano deviazioni indesiderate nel disegno di Blood. Questo spazio ammette solo l'ordine prestabilito dal possessore del quaderno.
+
+_Gli umani sono davvero interessanti..._ 🍎`;
 
     await conn.sendMessage(m.chat, {
         text,
         mentions: [sender],
         contextInfo: {
             externalAdReply: {
-                title: 'BLOOD SECURITY SYSTEM',
-                body: 'Link vietato rilevato',
+                title: 'R Y U K  S E C U R I T Y',
+                body: 'La traccia del link è stata eliminata.',
                 thumbnailUrl: 'https://qu.ax/TfUj.jpg',
                 mediaType: 1,
                 renderLargerThumbnail: true
@@ -88,7 +90,7 @@ async function handleViolation(conn, m, reason, isBotAdmin) {
         }
     });
 
-    // Opzionale: Rimuovi l'utente se non è admin e il bot è admin
+    // Rimuove l'utente se non è admin e lo shinigami ha i poteri (isBotAdmin)
     if (isBotAdmin) {
         await conn.groupParticipantsUpdate(m.chat, [sender], 'remove');
     }
@@ -103,16 +105,16 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
     if (!chat?.antiLink) return false;
 
     const extractedText = (m.text || m.caption || m.msg?.caption || m.msg?.text || '').toLowerCase();
-    
+
     let linkFound = false;
     let reason = '';
 
     if (await containsSuspiciousLink(extractedText)) {
         linkFound = true;
-        reason = isWhatsAppLink(extractedText) ? 'Link WhatsApp rilevato' : 'Link/URL abbreviato rilevato';
+        reason = isWhatsAppLink(extractedText) ? 'Link WhatsApp intercettato' : 'URL abbreviato / sospetto rilevato';
     }
 
-    // Se troviamo un link, attiviamo la punizione
+    // Se troviamo un link, attiviamo la punizione sul Death Note
     if (linkFound) {
         await handleViolation(conn, m, reason, isBotAdmin);
         return true;
