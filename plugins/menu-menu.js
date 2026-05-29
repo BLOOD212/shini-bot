@@ -2,36 +2,33 @@ import { promises as fs } from 'fs'
 import { join } from 'path'
 
 const emojicategoria = {
-  info: 'ℹ️',
-  main: '💠',
-  sicurezza: '🛡️'
+  info: '🍎',
+  main: '📓',
+  sicurezza: '❌'
 }
 
 let tags = {
-  main: '╭ *`SYSTEM MAIN`* ╯',
-  sicurezza: '╭ *`SECURITY SYSTEM`* ╯',
-  info: '╭ *`DATABASE INFO`* ╯'
+  main: '𓃦 ── SYSTEM MAIN ── 𓃥',
+  sicurezza: '𓃦 ── SECURITY SYSTEM ── 𓃥',
+  info: '𓃦 ── DATABASE INFO ── 𓃥'
 }
 
-// CAMBIATO: "before" diventa "testoInizio", "after" diventa "testoFine"
 const defaultMenu = {
   testoInizio: `
-┏━━━━━━━━━━━━━━━━━━━━┓
-   💠  *B L D  -  B O T* 💠
-┗━━━━━━━━━━━━━━━━━━━━┛
- ┌───────────────────
- │ 👤 *User:* %name
- │ 🕒 *Uptime:* %uptime
- │ 👥 *Total Users:* %totalreg
- └───────────────────
- 
- *PANNELLO DI CONTROLLO:*
-`.trimStart(),
+✒️ *DEATH NOTE SYSTEM* 
+_L'umano il cui nome è scritto su questo menu..._
+────────────────────────────
+💀 *USER:* %name
+⏱️ *UPTIME:* %uptime
+🍎 *TOTAL USERS:* %totalreg Utenti Registrati
+────────────────────────────
 
-  header: '      ⋆｡˚『 %category 』˚｡⋆\n╭',
-  body: '*│ ➢* 『%emoji』 %cmd',
-  footer: '*╰━━━━━━━──────━━━━━━━*\n',
-  testoFine: `_Powered by BLD-BOT Interface_`,
+*PANNELLO DI CONTROLLO:*`.trimStart(),
+
+  header: '\n\n  %category\n  ━━━━━━━━━━━━━━━━━━━━━━━━',
+  body: '  🩸 %cmd',
+  footer: '\n  ━━━━━━━━━━━━━━━━━━━━━━━━',
+  testoFine: `\n\n_Gli umani sono davvero interessanti..._ 🍎`,
 }
 
 const localImg = './menu-principale.jpeg'
@@ -63,7 +60,6 @@ let handler = async (m, { conn, usedPrefix: _p }) => {
 
     let menuTags = Object.keys(tags)
 
-    // CAMBIATO: uso testoInizio e testoFine qui sotto
     let _text = [
       defaultMenu.testoInizio,
       ...menuTags.map(tag => {
@@ -73,7 +69,6 @@ let handler = async (m, { conn, usedPrefix: _p }) => {
             .map(menu => menu.help.map(h => 
               defaultMenu.body
                 .replace(/%cmd/g, menu.prefix ? h : _p + h)
-                .replace(/%emoji/g, emojicategoria[tag])
             ).join('\n')),
           defaultMenu.footer
         ].join('\n')
@@ -95,23 +90,23 @@ let handler = async (m, { conn, usedPrefix: _p }) => {
     try {
       imageBuffer = await fs.readFile(localImg)
     } catch (e) {
-      console.log("⚠️ Immagine NON trovata")
+      console.log("❌ [RYUK] Pergamena visiva 'menu-principale.jpeg' smarrita.")
     }
 
     await conn.sendMessage(m.chat, {
       ...(imageBuffer ? { image: imageBuffer } : {}),
       caption: text.trim(),
-      footer: "B L D - B O T  S Y S T E M",
+      footer: "R Y U K  P A G E",
       buttons: buttons,
       headerType: 4,
       viewOnce: true
     }, { quoted: m })
 
-    await m.react('💠')
+    await m.react('📓')
 
   } catch (e) {
     console.error(e)
-    conn.reply(m.chat, `❌ Errore BLD-SYS: ${e.message}`, m)
+    conn.reply(m.chat, `❌ Quaderno bruciato: ${e.message}`, m)
   }
 }
 
