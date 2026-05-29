@@ -8,7 +8,7 @@ handler.before = async function (m, { conn, isAdmin, isBotAdmin, isOwner, isSam 
     if (!m.isGroup) return;
     const chat = global.db.data.chats[m.chat] || {};
 
-    // Filtri di esclusione
+    // Filtri di esclusione dallo sguardo dello Shinigami
     if (!chat.antispam || chat.modoadmin || isOwner || isSam || isAdmin || !isBotAdmin) return;
     if (m.message?.viewOnceMessage) return;
     if (['reactionMessage', 'pollUpdateMessage', 'protocolMessage'].includes(m.mtype)) return;
@@ -22,9 +22,9 @@ handler.before = async function (m, { conn, isAdmin, isBotAdmin, isOwner, isSam 
 
     const config = {
         timeWindow: 10000,      // Finestra di 10 secondi
-        removeThreshold: 10,    // Max messaggi
+        removeThreshold: 10,    // Max messaggi tollerati
         timeThreshold: 1500,    // Media millisecondi tra messaggi
-        cleanupInterval: 300000 // 5 minuti
+        cleanupInterval: 300000 // Pulizia ogni 5 minuti
     };
 
     const now = Date.now();
@@ -47,7 +47,7 @@ handler.before = async function (m, { conn, isAdmin, isBotAdmin, isOwner, isSam 
     userData.timestamps.push(msgTimestamp);
     userData.messages.push({ time: msgTimestamp, hash: contentHash });
 
-    // Pulizia vecchi log utente
+    // Pulizia registri temporanei dell'utente
     userData.timestamps = userData.timestamps.filter(t => now - t < config.timeWindow);
     userData.messages = userData.messages.filter(msg => now - msg.time < config.timeWindow);
 
@@ -72,30 +72,30 @@ handler.before = async function (m, { conn, isAdmin, isBotAdmin, isOwner, isSam 
                 uzer.delete(decodedSender);
                 const typeSanz = duplicateCount >= 4 ? `SPAM DUPLICATI (${duplicateCount + 1}x)` : `FLOOD RAPIDO (${averageTime.toFixed(0)}ms)`;
 
-                const header = `⋆｡˚『 ╭ \`ANTISPAM SYSTEM\` ╯ 』˚｡⋆`;
-                const footer = `╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`;
+                // Messaggio estetico in puro stile Ryuk
+                const text = `✒️ *DEATH NOTE SYSTEM* 
+_Umani impazienti che intasano il fluire delle anime..._
+────────────────────────────
+💀 *TARGET:* @${decodedSender.split('@')[0]}
+⚡ *RILEVATO:* ${typeSanz}
+❌ *AZIONE:* Cancellazione Utente
+────────────────────────────
 
-                const text = `${header}
-╭
-┃ 🛡️ \`Stato:\` *Protocollo Blood Attivo*
-┃
-┃ 『 👤 』 \`Target:\` @${decodedSender.split('@')[0]}
-┃ 『 ⚡ 』 \`Rilevato:\` *${typeSanz}*
-┃ 『 🚫 』 \`Azione:\` *ELIMINAZIONE UTENTE*
-┃
-┃ ⚠️ \`Nota:\` Lo spam destabilizza il gruppo.
-┃ La sicurezza di Blood ha priorità.
-╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`;
+𓃦 🩸 *SENTENZA DI RYUK:*
+La ripetizione ossessiva compromette l'ordine del quaderno. Chi genera caos superfluo e disturba il disegno di Blood non merita di restare qui.
+
+_Il tuo tempo è scaduto velocemente._ 🍎`;
 
                 await conn.sendMessage(m.chat, {
                     text,
                     mentions: [decodedSender],
                     contextInfo: {
                         externalAdReply: {
-                            title: 'BLOOD ANTI-FLOOD',
-                            body: 'Minaccia spam neutralizzata',
+                            title: 'R Y U K  A N T I - F L O O D',
+                            body: 'Minaccia spam neutralizzata nel registro.',
                             thumbnailUrl: 'https://qu.ax/TfUj.jpg',
-                            mediaType: 1
+                            mediaType: 1,
+                            renderLargerThumbnail: true
                         }
                     }
                 });
@@ -103,7 +103,7 @@ handler.before = async function (m, { conn, isAdmin, isBotAdmin, isOwner, isSam 
                 await conn.groupParticipantsUpdate(m.chat, [decodedSender], 'remove');
 
             } catch (e) {
-                console.error(`[AntiSpam] Errore:`, e);
+                console.error(`[Ryuk-AntiSpam] Errore:`, e);
             }
             return;
         }
