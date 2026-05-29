@@ -15,11 +15,11 @@ function rilevaDispositivoCheck(msgID = '') {
 
 export async function before(m, { conn, isAdmin, isOwner, isSam }) {
   const chat = global.db.data.chats[m.chat];
-  
+
   // Controllo attivazione Antibot
   if (!chat?.antiBot) return;
   if (!m.isGroup || !m.sender || !m.key?.id) return;
-  
+
   // Gli admin, Blood e il bot stesso sono immuni
   if (isAdmin || isOwner || isSam || m.fromMe) return;
 
@@ -37,30 +37,31 @@ export async function before(m, { conn, isAdmin, isOwner, isSam }) {
   // Se l'utente è in whitelist o è il fondatore, esce
   if (autorizzati.includes(m.sender)) return;
 
-  // Esecuzione sanzione
+  // Esecuzione sanzione (Rimozione dal gruppo)
   await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove');
 
-  // Messaggio estetico BLD-BLOOD
-  const text = `
-⋆｡˚『 ╭ \`SISTEMA ANTIBOT\` ╯ 』˚｡⋆
-╭
-┃ 🛡️ \`Stato:\` *Protocollo Blood Attivo*
-┃
-┃ 『 👤 』 \`Target:\` @${m.sender.split('@')[0]}
-┃ 『 🤖 』 \`Dispositivo:\` *${device.toUpperCase()}*
-┃ 『 🚫 』 \`Azione:\` *Eliminazione immediata*
-┃
-┃ ⚠️ \`Nota:\` Bot o connessioni web non autorizzate.
-╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`
+  // Messaggio estetico in puro stile Ryuk
+  const text = `✒️ *DEATH NOTE SYSTEM* 
+_Un'intelligenza artificiale estranea tenta di imitarmi..._
+────────────────────────────
+💀 *TARGET:* @${m.sender.split('@')[0]}
+🤖 *DISPOSITIVO:* ${device.toUpperCase()}
+🩸 *AZIONE:* Eliminazione Immediata
+────────────────────────────
+
+𓃦 ⚠️ *REGOLA DEL QUADERNO:* 
+I finti bot e le connessioni web non autorizzate alterano l'ordine delle anime. Questo spazio appartiene al possessore del Death Note.
+
+_Gli umani sono davvero interessanti..._ 🍎`
 
   await conn.sendMessage(m.chat, {
     text,
     mentions: [m.sender],
     contextInfo: {
       externalAdReply: {
-        title: 'BLD-BLOOD SECURITY',
-        body: 'Rilevamento connessione non sicura',
-        thumbnailUrl: 'https://qu.ax/TfUj.jpg', // Usa la tua immagine se ne hai una specifica
+        title: 'R Y U K  S E C U R I T Y',
+        body: 'Falsa presenza rilevata ed eliminata.',
+        thumbnailUrl: 'https://qu.ax/TfUj.jpg',
         mediaType: 1,
         renderLargerThumbnail: true
       }
