@@ -440,4 +440,4 @@ async function connectSubBots() {
             console.log(chalk.bold.hex('#4A4A4A')('⚠️ Nessun subordinato attivo.'));
         }
     } catch (err) {
-        console.log(chalk.bold.red('❌ Errore Sub-Bot:', err.message)
+        console.log(chalk.bold.red('❌ Errore Sub-Bot:', err.message))
