@@ -19,7 +19,7 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
     const chat = global.db.data.chats[m.chat];
     if (!chat || !chat.antitrava) return true;
 
-    // Immunità per Admin, Blood e il bot stesso
+    // Immunità per gli amministratori, i padroni del quaderno e Blood
     if (isAdmin || isOwner || isSam || m.fromMe) return true;
 
     const text = extractText(m);
@@ -30,41 +30,39 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
     const isZalgo = zalgoMatches.length > 5;
 
     if (isTooLong || isZalgo) {
-        // Eliminazione immediata del messaggio pericoloso
+        // Cancellazione immediata della minaccia per preservare il registro
         await conn.sendMessage(m.chat, { delete: m.key }).catch(() => {});
 
-        // Rimozione dell'utente se il bot è admin
+        // Lo Shinigami recide il legame ed espelle l'utente se ha i poteri
         if (isBotAdmin) {
             await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove').catch(() => {});
         }
 
         const userTag = m.sender.split('@')[0];
-        const reason = isTooLong ? 'Eccessiva lunghezza (Trava)' : 'Caratteri Zalgo/Crash rilevati';
-        
-        // Messaggio estetico BLD-BLOOD
-        const header = `⋆｡˚『 ╭ \`ANTITRAVA SYSTEM\` ╯ 』˚｡⋆`;
-        const footer = `╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`;
+        const reason = isTooLong ? 'Testo infinito (Trava/Lag)' : 'Caratteri corrotti (Zalgo/Crash)';
 
-        const textMsg = `${header}
-╭
-┃ 🛡️ \`Stato:\` *Protocollo Blood Attivo*
-┃
-┃ 『 👤 』 \`Target:\` @${userTag}
-┃ 『 ⚠️ 』 \`Rilevato:\` *Tentativo di Crash*
-┃ 『 🚫 』 \`Azione:\` *ELIMINAZIONE UTENTE*
-┃ 『 📝 』 \`Motivo:\` ${reason}
-┃
-┃ ⚠️ \`Nota:\` I tentativi di destabilizzazione
-┃ del gruppo non sono tollerati.
-╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`;
+        // Messaggio estetico in puro stile Ryuk
+        const textMsg = `✒️ *DEATH NOTE SYSTEM* 
+_Un patetico tentativo di corrompere la memoria di questo mondo..._
+────────────────────────────
+💀 *TARGET:* @${userTag}
+⚠️ *RILEVATO:* Tentativo di Crash / Lagging
+❌ *AZIONE:* ESTIRPAZIONE IMMEDIATA
+🩸 *MOTIVO:* ${reason}
+────────────────────────────
+
+𓃦  *PROTOCOLLO DI SICUREZZA:*
+Gli umani che usano codici distorti o testi smisurati per destabilizzare l'ordine del quaderno vengono rimossi senza alcuna esitazione.
+
+_La tua traccia è stata cancellata prima di bloccarmi._ 🍎`;
 
         await conn.sendMessage(m.chat, {
             text: textMsg,
             mentions: [m.sender],
             contextInfo: {
                 externalAdReply: {
-                    title: 'BLOOD CRASH PROTECTION',
-                    body: 'Minaccia neutralizzata',
+                    title: 'R Y U K  C R A S H  P R O T E C T I O N',
+                    body: 'Minaccia di corruzione testuale neutralizzata.',
                     thumbnailUrl: 'https://qu.ax/TfUj.jpg',
                     mediaType: 1,
                     renderLargerThumbnail: true
