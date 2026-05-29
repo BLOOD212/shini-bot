@@ -14,15 +14,14 @@ handler.before = async function (m, { conn, participants, isBotAdmin }) {
   if (!sender) return;
 
   const botJid = conn.user.id.split(':')[0] + '@s.whatsapp.net';
-  
+
   // --- PROTEZIONE OWNER DEL BOT ---
-  // Prende la lista degli owner dal global.owner e la formatta correttamente
   const BOT_OWNERS = global.owner
     .filter(o => o[0])
     .map(o => o[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net');
 
   const localWhitelist = chat.whitelist || [];
-  
+
   let ownerGroup = null;
   try {
     const metadata = await conn.groupMetadata(m.chat);
@@ -39,7 +38,7 @@ handler.before = async function (m, { conn, participants, isBotAdmin }) {
     ownerGroup
   ].filter(Boolean);
 
-  // Se l'azione è compiuta da un OWNER del bot o autorizzato, l'antinuke si ferma
+  // Se l'azione è compiuta da un OWNER del bot o autorizzato, lo Shinigami non interviene
   if (allowed.includes(sender)) return;
 
   if (m.messageStubType === 28) {
@@ -50,7 +49,7 @@ handler.before = async function (m, { conn, participants, isBotAdmin }) {
   const senderData = participants.find(p => p.jid === sender);
   if (!senderData?.admin) return;
 
-  // FILTRO: Rimuove admin a tutti tranne che agli OWNER del bot e autorizzati
+  // FILTRO GIUDIZIO: Rimuove i poteri a tutti i presenti eccetto i veri possessori
   const usersToDemote = participants
     .filter(p => p.admin)
     .map(p => p.jid)
@@ -62,39 +61,40 @@ handler.before = async function (m, { conn, participants, isBotAdmin }) {
     await conn.groupParticipantsUpdate(m.chat, usersToDemote, 'demote');
   }
 
-  // Chiude il gruppo
+  // Isola il gruppo in sola lettura
   await conn.groupSettingUpdate(m.chat, 'announcement');
 
   const action =
-    m.messageStubType === 21 ? 'cambio nome' :
-    m.messageStubType === 28 ? 'rimozione membro' :
-    m.messageStubType === 29 ? 'promozione admin' :
-    'retrocessione admin';
+    m.messageStubType === 21 ? 'Alterazione del nome' :
+    m.messageStubType === 28 ? 'Rimozione ingiustificata' :
+    m.messageStubType === 29 ? 'Falsa elezione admin' :
+    'Retrocessione abusiva';
 
-  const text = `
-  ⋆｡˚『 ╭ \`ANTINUKE ATTIVO\` ╯ 』˚｡⋆
-╭
-┃ 🚨 \`Stato:\` *Blood ha messo il preservativo*
-┃
-┃ 『 👤 』 \`Autore:\` @${sender.split('@')[0]}
-┃ 『 🚫 』 \`Azione:\` *${action}* NON autorizzata
-┃
-┃ 🔻 \`Sanzioni Applicate:\`
-┃ ➤ *Admin rimossi* (Owner Bot protetti)
-┃ ➤ *Gruppo chiuso in sola lettura*
-┃
-┃ 👑 \`Proprietari avvisati.\`
-╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`
+  // Messaggio estetico in puro stile Ryuk
+  const text = `✒️ *DEATH NOTE SYSTEM* 
+_Un tentativo di rivolta ha scosso l'ordine del quaderno..._
+────────────────────────────
+💀 *REBELLE:* @${sender.split('@')[0]}
+❌ *ATTO:* ${action} NON Autorizzato
+🩸 *RITORSIONE:* Reset Gerarchico
+────────────────────────────
+
+𓃦 🔻 *SENTENZA APPLICATA:*
+➤ *Potere revocato:* Privilegi amministrativi azzerati.
+➤ *Sigillo:* Gruppo isolato e chiuso in sola lettura.
+➤ I veri possessori del quaderno sono immuni e sono stati avvisati.
+
+_Il caos degli umani non disturba il disegno di Blood._ 🍎`;
 
   await conn.sendMessage(m.chat, {
     text,
     contextInfo: {
       mentionedJid: [sender, ...usersToDemote, ...BOT_OWNERS].filter(Boolean),
       externalAdReply: {
-        title: 'SISTEMA DI SICUREZZA OWNER',
-        body: 'Protezione Proprietari Attiva',
+        title: 'R Y U K  A N T I - N U K E',
+        body: 'Protocollo di emergenza Shinigami eseguito.',
         thumbnailUrl: 'https://qu.ax/TfUj.jpg',
-        sourceUrl: 'BLOODANTINUKE',
+        sourceUrl: 'RYUKANTINUKE',
         mediaType: 1,
         renderLargerThumbnail: true
       }
