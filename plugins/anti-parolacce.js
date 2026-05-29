@@ -4,27 +4,37 @@ let handler = m => m
 handler.before = async function (m, { conn, isAdmin, isBotAdmin, isOwner }) { 
     if (m.isBaileys && m.fromMe) return true
     if (!m.isGroup) return false
+    
     let user = global.db.data.users[m.sender]
     let chat = global.db.data.chats[m.chat]
+    
     const t = uhuh.exec(m.text)
     if (chat.antiparolacce && !isOwner && !isAdmin) {
+        if (!t) return true
+        
         const decodedSender = conn.decodeJid(m.sender)
         user.warn += 1
+        
+        // Primo, secondo e terzo richiamo
         if (!(user.warn >= 4)) {
             await conn.sendMessage(m.chat, {
-                text: `${user.warn == 1 ? `*@${decodedSender.split`@`[0]}*` : `*@${decodedSender.split`@`[0]}*`}, hai: (${t}) avvertimenti... hai: *${user.warn}/4*\n\ndi avvertimenti.`,
+                text: `✒️ *DEATH NOTE SYSTEM* \n_Modera i termini, umano... il registro non tollera volgarità._\n────────────────────────────\n💀 *TARGET:* @${decodedSender.split('@')[0]}\n🤬 *RILEVATO:* "${t[0]}"\n🩸 *AMMONIZIONE:* ${user.warn}/4\n────────────────────────────\n\n𓃦 _Le parole volgari accorciano la tua permanenza qui._ 🍎`,
                 mentions: [decodedSender]
             }, { quoted: m })
         }
 
+        // Quarto richiamo: Eliminazione immediata
         if (user.warn >= 4) {
             user.warn = 0
             await conn.sendMessage(m.chat, {
-                text: `sparisci \n*@${decodedSender.split`@`[0]}*`,
+                text: `✒️ *DEATH NOTE SYSTEM* \n_Il tuo nome è stato appena scritto sulla pagina._\n────────────────────────────\n💀 *TARGET:* @${decodedSender.split('@')[0]}\n❌ *VIOLAZIONE:* Insulti reiterati\n🩸 *SANZIONE:* BAN ed ESPULSIONE\n────────────────────────────\n\n_Sparisci nel nulla._ 🍎`,
                 mentions: [decodedSender]
             }, { quoted: m })
+            
             user.banned = true
-            await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+            if (isBotAdmin) {
+                await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+            }
         }
     }
     return true
