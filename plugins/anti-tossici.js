@@ -24,33 +24,41 @@ const insultiebs = [
     "[nN][e3][gG]r[o0a]",
 ]
 const ir = new RegExp(`\\b(${insultiebs.join('|')})\\b`, 'i')
+
 let handler = m => m
 handler.before = async function (m, { conn, isAdmin, isBotAdmin, isOwner }) {
     if (m.isBaileys && m.fromMe) return true
     if (!m.isGroup) return false
+    
     let chat = global.db.data.chats[m.chat]
     let user = global.db.data.users[m.sender]
+    
     const isToxic = ir.exec(m.text)
     if (isToxic && chat.antiToxic && !isOwner && !isAdmin) {
         user.warn += 1
         const decodedSender = conn.decodeJid(m.sender)
         const badWord = isToxic[0]
-        if (user.warn < 4) {
+        
+        // Primo e secondo avvertimento
+        if (user.warn < 3) {
             await conn.sendMessage(m.chat, {
-                text: `🚫 *Nuh uh, no buono*\n\n@${decodedSender.split`@`[0]}, hai detto una parola vietata: "${badWord}"\n- ⚠️ Avvertimenti: *${user.warn}/3*`,
+                text: `✒️ *DEATH NOTE SYSTEM* \n_Tossicità rilevata... Il registro rifiuta espressioni impure._\n────────────────────────────\n💀 *TARGET:* @${decodedSender.split('@')[0]}\n🤬 *TERMINE:* "${badWord}"\n🩸 *AMMONIZIONE:* ${user.warn}/3\n────────────────────────────\n\n𓃦 _Purifica il tuo linguaggio prima che sia tardi._ 🍎`,
                 mentions: [decodedSender]
             }, { quoted: m })
         }
+        
+        // Terzo avvertimento ed eliminazione
         if (user.warn >= 3) {
             user.warn = 0
             await conn.sendMessage(m.chat, {
-                text: `⛔ *Sparisci* @${decodedSender.split`@`[0]} sei stato rimosso per comportamento tossico.\n- Addio.`,
+                text: `✒️ *DEATH NOTE SYSTEM* \n_La tua condotta ha consumato l'ultima riga di tolleranza..._\n────────────────────────────\n💀 *TARGET:* @${decodedSender.split('@')[0]}\n❌ *VIOLAZIONE:* Comportamento altamente tossico\n🩸 *SANZIONE:* GIUDIZIO (Espulsione)\n────────────────────────────\n\n_Il tuo nome è stato scritto sulla pagina._ 🍎`,
                 mentions: [decodedSender]
             }, { quoted: m })
+            
             if (isBotAdmin) {
                 await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
             } else {
-                await conn.sendMessage(m.chat, { text: `⚠️ Non posso rimuovere l'utente perché non sono Admin del gruppo.` }, { quoted: m })
+                await conn.sendMessage(m.chat, { text: `𓃦 ⚠️ _Impossibile eseguire il giudizio capitale. Lo Shinigami richiede i poteri di Admin._` }, { quoted: m })
             }
         }
     }
