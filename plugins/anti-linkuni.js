@@ -56,14 +56,11 @@ async function addWarn(conn, m, target, reason, isBotAdmin) {
   user.warns[m.chat] += 1
   const warns = user.warns[m.chat]
   const tag = target.split('@')[0]
-  
-  const header = `⋆｡˚『 ╭ \`SISTEMA ANTILINK\` ╯ 』˚｡⋆`
-  const footer = `╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`
 
   if (warns >= 3) {
     user.warns[m.chat] = 0
     await conn.sendMessage(m.chat, {
-      text: `${header}\n\n🚨 *TERMINAZIONE* @${tag}\n\n┃ ⛔ \`Violazione:\` Link multipli\n┃ ⚠️ \`Warn:\` *3/3*\n┃ 💀 \`Sanzione:\` *ESPULSIONE*\n\n${footer}`,
+      text: `✒️ *DEATH NOTE SYSTEM* \n_Il limite della tolleranza globale è scaduto..._\n────────────────────────────\n💀 *TARGET:* @${tag}\n🚫 *VIOLAZIONE:* Collegamenti abusivi ripetuti\n🩸 *SANZIONE:* CANCELLAZIONE (Espulsione)\n────────────────────────────\n\n_Il tuo nome è stato scritto sulla pagina._ 🍎`,
       mentions: [target]
     }).catch(() => {})
 
@@ -74,7 +71,7 @@ async function addWarn(conn, m, target, reason, isBotAdmin) {
   }
 
   await conn.sendMessage(m.chat, {
-    text: `${header}\n\n🚨 *ATTENZIONE* @${tag}\n\n┃ ⛔ \`Violazione:\` *${reason}*\n┃ ⚠️ \`Warn:\` *${warns}/3*\n┃ 🚫 \`Azione:\` Messaggio rimosso\n\n${footer}`,
+    text: `✒️ *DEATH NOTE SYSTEM* \n_Un URL non autorizzato tenta di inquinare il registro..._\n────────────────────────────\n💀 *TARGET:* @${tag}\n🔗 *RILEVATO:* ${reason}\n🩸 *AMMONIZIONE:* ${warns}/3\n❌ *AZIONE:* Rimozione Immediata\n────────────────────────────\n\n𓃦 _Non costringermi ad usare la penna._ 🍎`,
     mentions: [target]
   }).catch(() => {})
 }
@@ -95,13 +92,13 @@ handler.before = async function (m, { conn, isAdmin, isBotAdmin, isOwner, isSam 
   const text = extractTextFromMessage(m, true)
   if (!containsLink(text)) return true
 
-  // Azione immediata: eliminazione
+  // Azione immediata dal Death Note: eliminazione
   if (isBotAdmin) {
     await conn.sendMessage(m.chat, { delete: m.key }).catch(() => {})
   }
-  
+
   // Registrazione violazione
-  await addWarn(conn, m, m.sender, 'Link universale non autorizzato', !!isBotAdmin)
+  await addWarn(conn, m, m.sender, 'Link Universale / Dominio generico', !!isBotAdmin)
 
   return false
 }
