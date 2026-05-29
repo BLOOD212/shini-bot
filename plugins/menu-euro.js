@@ -9,32 +9,31 @@ const localImg = join(process.cwd(), 'menu-euro.jpeg');
 
 const defaultMenu = {
   before: `
-┎━━━━━━━━━━━━━━━━━━━┑
-┃   ✧  𝐁𝐋𝐃 - 𝐄𝐂𝐎𝐍𝐎𝐌𝐘  ✧   ┃
-┖━━━━━━━━━━━━━━━━━━━┙
-┌───────────────────┐
-  👤 𝚄𝚜𝚎𝚛: %name
-  💳 𝚂𝚊𝚕𝚍𝚘: %eris ᴇʀɪs
-  🏆 𝙻𝚟𝚕: %level
-  🛡️ 𝚁𝚊𝚗𝚔: %role
-└───────────────────┘
+✒️ *DEATH NOTE SYSTEM* 
+_L'umano il cui nome è scritto su questo menu..._
+────────────────────────────
+💀 *USER:* %name
+🪙 *SALDO:* %eris ERIS
+🏆 *LEVEL:* %level
+🛡️ *RANK:* %role
+────────────────────────────
 
-*〘 ᴇxᴛʀᴀᴄᴛɪɴɢ ᴅᴀᴛᴀ... 〙*
-`.trimStart(),
-  header: '┍━━━〔 %category 〕━━━┑',
-  body: '┇ 🪙  *%cmd*',
-  footer: '┕━━━━━──ׄ──ׅ──ׄ──━━━━━┙\n',
-  after: `_ꜱʏꜱᴛᴇᴍ ᴏᴘᴇʀᴀᴛɪᴏɴᴀʟ ᴠ.2.0_`
+*PANNELLO DI CONTROLLO:*`.trimStart(),
+
+  header: '\n\n  𓃦 ── %category ── 𓃥\n  ━━━━━━━━━━━━━━━━━━━━━━━━',
+  body: '  🩸 %cmd',
+  footer: '\n  ━━━━━━━━━━━━━━━━━━━━━━━━',
+  after: `\n\n_Gli umani sono davvero interessanti..._ 🍎`
 }
 
 let handler = async (m, { conn, usedPrefix: _p, __dirname, args, command}) => {
   let tags = {
-    'euro': '🗂️ ᴅᴀᴛᴀʙᴀsᴇ ᴇᴜʀᴏ'
+    'euro': 'DATABASE INFO'
   }
 
   try {
     await conn.sendPresenceUpdate('composing', m.chat)
-    
+
     let d = new Date(new Date().getTime() + 3600000)
     let _uptime = process.uptime() * 1000
     let uptime = clockString(_uptime)
@@ -75,9 +74,9 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname, args, command}) => {
 
     let text = _text.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join`|`})`, 'g'), (_, name) => '' + replace[name])
 
-    await m.react('💳')
+    await m.react('📓')
 
-    // --- INVIO COME IMMAGINE (SOSTITUITO VIDEO) ---
+    // --- INVIO COME IMMAGINE REPLICANDO IL FORMATO RYUK ---
     await conn.sendMessage(m.chat, {
       image: { url: localImg },
       caption: text.trim(),
@@ -85,14 +84,14 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname, args, command}) => {
         mentionedJid: [m.sender],
         forwardedNewsletterMessageInfo: {
           newsletterJid: '120363232743845068@newsletter',
-          newsletterName: "✧ 𝙱𝙻𝙳-𝙱𝙾𝚃 𝙴𝙲𝙾𝙽𝙾𝙼𝚈 ✧"
+          newsletterName: "R Y U K  P A G E"
         }
       }
     }, { quoted: m })
 
   } catch (e) {
     console.error(e)
-    conn.reply(m.chat, '❌ Error in Core System: Check if menu-euro.jpeg exists.', m)
+    conn.reply(m.chat, '❌ Errore nel registro dell\'economia: Verifica la presenza di menu-euro.jpeg.', m)
   }
 }
 
