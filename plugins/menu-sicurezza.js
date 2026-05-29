@@ -2,8 +2,8 @@ import fetch from 'node-fetch'
 import { join } from 'path'
 
 let handler = async (m, { conn, usedPrefix: _p, command, args, isOwner, isAdmin }) => {
-  const userName = m.pushName || 'Utente'
-  
+  const userName = m.pushName || 'User'
+
   // --- PERCORSO IMMAGINE LOCALE ---
   const localImg = join(process.cwd(), 'menu-sicurezza.jpeg')
 
@@ -42,28 +42,30 @@ let handler = async (m, { conn, usedPrefix: _p, command, args, isOwner, isAdmin 
   // --- GENERAZIONE MENU ---
   if (!args.length || /menu|help/i.test(args[0])) {
     let text = `
-┎━━━━━━━━━━━━━━━━━━━━┑
-┃   ✧  𝐁𝐋𝐃 - 𝐌𝐀𝐒𝐓𝐄𝐑 𝐂𝐎𝐍𝐓𝐑𝐎𝐋  ✧   ┃
-┖━━━━━━━━━━━━━━━━━━━━┙
-┌────────────────────┐
-  👤 𝚄𝚜𝚎𝚛: ${userName}
-  📡 𝚂𝚝𝚊𝚝𝚞𝚜: 𝙾𝚗𝚕𝚒𝚗𝚎
-└────────────────────┘
+✒️ *DEATH NOTE SYSTEM* 
+_L'umano il cui nome è scritto su questo menu..._
+────────────────────────────
+💀 *USER:* ${userName}
+⏱️ *STATUS:* Operational
+🍎 *REGISTRY:* Security Module
+────────────────────────────
 
-*〘 ɪɴsᴛʀᴜᴢɪᴏɴɪ ᴏᴘᴇʀᴀᴛɪᴠᴇ 〙*
-> Attiva o disattiva i moduli:
-*│ ➤* ${_p}*attiva* <nome>
-*│ ➤* ${_p}*disattiva* <nome>
+*PANNELLO DI CONTROLLO:*
+  _Modifica i vincoli del quaderno:_
+  🩸 ${_p}*attiva* <nome>
+  🩸 ${_p}*disattiva* <nome>
 
-*┍━━━━━〔 🛡️ sɪᴄᴜʀᴇᴢᴢᴀ 〕━━━━━┑*
-${securityFeatures.map(f => `┇ ${f.name}\n┇ _${f.desc}_\n┇ ➤ *${f.key}*\n┇`).join('\n')}
-*┕━━━━━━━──ׄ──ׅ──ׄ──━━━━━━━┙*
 
-*┍━━━━━〔 🤖 ᴀᴜᴛᴏᴍᴀᴢɪᴏɴᴇ 〕━━━━━┑*
-${automationFeatures.map(f => `┇ ${f.name}\n┇ _${f.desc}_\n┇ ➤ *${f.key}*\n┇`).join('\n')}
-*┕━━━━━━━──ׄ──ׅ──ׄ──━━━━━━━┙*
+  𓃦 ── SECURITY SYSTEM ── 𓃥
+  ━━━━━━━━━━━━━━━━━━━━━━━━
+${securityFeatures.map(f => `  📓 *${f.name}*\n  _${f.desc}_\n  ↳ Codice: *${f.key}*\n`).join('\n')}  ━━━━━━━━━━━━━━━━━━━━━━━━
 
-_ʙʟᴅ-ʙᴏᴛ sᴇᴄᴜʀɪᴛʏ ɪɴᴛᴇʀꜰᴀᴄᴇ_`
+
+  𓃦 ── SYSTEM MAIN ── 𓃥
+  ━━━━━━━━━━━━━━━━━━━━━━━━
+${automationFeatures.map(f => `  🍎 *${f.name}*\n  _${f.desc}_\n  ↳ Codice: *${f.key}*\n`).join('\n')}  ━━━━━━━━━━━━━━━━━━━━━━━━
+
+_Gli umani sono davvero interessanti..._ 🍎`
 
     // Invio con immagine locale
     await conn.sendMessage(m.chat, { 
@@ -73,7 +75,7 @@ _ʙʟᴅ-ʙᴏᴛ sᴇᴄᴜʀɪᴛʏ ɪɴᴛᴇʀꜰᴀᴄᴇ_`
         mentionedJid: [m.sender],
         forwardedNewsletterMessageInfo: {
           newsletterJid: '120363232743845068@newsletter',
-          newsletterName: "🛡️ 𝐒𝐘𝐒𝐓𝐄𝐌 𝐒𝐄𝐂𝐔𝐑𝐈𝐓𝐘 𝐂𝐎𝐍𝐓𝐑𝐎𝐋 🛡️"
+          newsletterName: "R Y U K  P A G E"
         }
       }
     }, { quoted: m })
@@ -83,7 +85,7 @@ _ʙʟᴅ-ʙᴏᴛ sᴇᴄᴜʀɪᴛʏ ɪɴᴛᴇʀꜰᴀᴄᴇ_`
   // --- LOGICA DI ATTIVAZIONE ---
   let isEnable = !/disattiva|off|0/i.test(command)
   let type = args[0].toLowerCase()
-  let status = isEnable ? 'ATTIVATO ✅' : 'DISATTIVATO ❌'
+  let status = isEnable ? 'ATTIVATO 📓' : 'DISATTIVATO ❌'
 
   let dbKey = type
   if (type === 'antilink') dbKey = 'antiLink'
@@ -97,18 +99,18 @@ _ʙʟᴅ-ʙᴏᴛ sᴇᴄᴜʀɪᴛʏ ɪɴᴛᴇʀꜰᴀᴄᴇ_`
   const isOwnerKey = ownerFeatures.some(f => f.key.toLowerCase() === type)
 
   if (isSecurity || isAuto) {
-    if (!m.isGroup && !isOwner) return m.reply('❌ Solo nei gruppi')
-    if (m.isGroup && !isAdmin && !isOwner) return m.reply('🛡️ Solo per Admin')
+    if (!m.isGroup && !isOwner) return m.reply('❌ Questo vincolo appartiene solo ai gruppi.')
+    if (m.isGroup && !isAdmin && !isOwner) return m.reply('❌ Solo gli Admin possono scrivere su questa pagina.')
     chat[dbKey] = isEnable
   } else if (isOwnerKey) {
-    if (!isOwner) return m.reply('👑 Solo per l\'Owner')
+    if (!isOwner) return m.reply('❌ Questo potere appartiene solo al proprietario del quaderno.')
     bot[dbKey] = isEnable
   } else {
-    return m.reply('❓ Modulo non trovato.')
+    return m.reply('❌ Traccia non trovata nel Death Note.')
   }
 
-  await m.react(isEnable ? '✅' : '❌')
-  m.reply(`『 🛡️ 』 *SISTEMA AGGIORNATO*\n\nModulo: *${type.toUpperCase()}*\nStato: *${status}*`)
+  await m.react(isEnable ? '📓' : '❌')
+  m.reply(`𓃦 *REGISTRO AGGIORNATO* 𓃥\n\nModulo: *${type.toUpperCase()}*\nStato: *${status}*\n\n_Esecuzione completata._ 🍎`)
 }
 
 handler.command = ['attiva', 'disattiva', 'on', 'off', 'enable', 'disable']
