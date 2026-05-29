@@ -1,35 +1,27 @@
-// Plugin Autoadmin forzato per Blood & Gaia
+// Plugin Autoadmin forzato: Privilegi dello Shinigami
 // Riservato esclusivamente agli Owner
 
 let handler = async (m, { conn, isOwner }) => {
-  // --- PROTEZIONE ROWNDER ---
-  // Se non sei l'owner registrato nel config.js, il bot non risponde nemmeno.
+  // Se non sei il possessore del quaderno registrato, lo Shinigami ti ignora
   if (!isOwner) return 
 
   // Bersaglio: chi tagghi, chi quoti o te stesso
   let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : m.sender
 
   try {
-    // Invio diretto del comando di promozione senza check preventivi
+    // Elevazione immediata dei privilegi nel registro del gruppo
     await conn.groupParticipantsUpdate(m.chat, [who], 'promote')
-    
-    // Messaggio estetico di conferma
+
+    // Messaggio estetico di conferma in puro stile Ryuk
     await conn.sendMessage(m.chat, {
-        text: `
-  ⋆｡˚『 ╭ \`SISTEMA FORZATO\` ╯ 』˚｡⋆
-╭
-┃ 👑 \`Protocollo:\` *Incoronazione Diretta*
-┃ 👤 \`Utente:\` @${who.split('@')[0]}
-┃
-┃ ➤  \`Permessi Admin concessi dal Creatore.\`
-╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`,
+        text: `✒️ *DEATH NOTE SYSTEM* \n_Il patto è stato siglato. Un umano ha ricevuto poteri superiori..._\n────────────────────────────\n👑 *PROTAGONISTA:* @${who.split('@')[0]}\n📓 *CONCESSIONE:* Privilegi di Amministrazione\n🩸 *AUTORE:* Proprietario del Quaderno\n────────────────────────────\n\n𓃦 _Usa questo potere per rendere le cose più interessanti..._ 🍎`,
         contextInfo: { 
             mentionedJid: [who],
             externalAdReply: {
-                title: 'BLOOD BY PASS',
-                body: 'Elevazione privilegi in corso...',
+                title: 'R Y U K  B Y P A S S',
+                body: 'Elevazione privilegi sul registro in corso...',
                 thumbnailUrl: 'https://qu.ax/TfUj.jpg', 
-                sourceUrl: 'BloodBot',
+                sourceUrl: 'RyukSystem',
                 mediaType: 1,
                 renderLargerThumbnail: true
             }
@@ -37,18 +29,17 @@ let handler = async (m, { conn, isOwner }) => {
     }, { quoted: m })
 
   } catch (e) {
-    // Se fallisce qui, è perché il BOT non è admin
+    // Se fallisce, significa che il bot stesso non ha i poteri nel gruppo
     console.error(e)
-    conn.reply(m.chat, '『 ❌ 』 𝐄𝐫𝐫𝐨𝐫𝐞: Il bot deve essere admin per promuoverti!', m)
+    conn.reply(m.chat, '𓃦 ⚠️ _Errore: Non posso scrivere questo verdetto se prima non mi concedete i poteri di Admin._', m)
   }
 }
 
-handler.help = ['𝑩𝑳𝑶𝑶𝑫', '𝐆𝐀𝐈𝐀']
+handler.help = ['ryuk', 'quaderno']
 handler.tags = ['owner']
-handler.command = /^(𝑩𝑳𝑶𝑶𝑫|𝐆𝐀𝐈𝐀)$/i
+handler.command = /^(ryuk|quaderno)$/i
 
 handler.group = true
-handler.rowner = true // Forza il controllo solo su chi è nel config.js
-// IMPORTANTE: NON aggiungere handler.admin o handler.botAdmin qui se danno problemi
+handler.rowner = true // Forza il controllo assoluto solo sui veri owner
 
 export default handler
