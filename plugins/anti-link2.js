@@ -109,16 +109,13 @@ function detectSocialLink(url) {
 
 export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
     if (!m.isGroup || isAdmin || isOwner || isSam || m.fromMe) return false
-    
+
     const chat = global.db.data.chats[m.chat]
     if (!chat) return false
-    
+
     const hasMaster = !!chat.antiLink2
     const hasAnySocialToggle = !hasMaster && Object.keys(chat).some(k => k.startsWith('antiLink2_') && chat[k] === true)
     if (!hasMaster && !hasAnySocialToggle) return false
-
-    const header = `⋆｡˚『 ╭ \`SISTEMA ANTISOCIAL\` ╯ 』˚｡⋆`
-    const footer = `╰⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒`
 
     try {
         const extractedText = extractTextFromMessage(m, true)
@@ -158,20 +155,22 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
             const user = global.db.data.users[m.sender] = global.db.data.users[m.sender] || {}
             user.antiLink2Warns = (user.antiLink2Warns || 0) + 1
 
-            // Elimina il messaggio
+            // Elimina il messaggio dal registro dello Shinigami
             if (isBotAdmin) {
                 try { await conn.sendMessage(m.chat, { delete: m.key }) } catch {}
             }
 
             if (user.antiLink2Warns < 3) {
+                // Primo/Secondo Avvertimento
                 await conn.sendMessage(m.chat, {
-                    text: `${header}\n\n🚨 *ATTENZIONE* @${m.sender.split('@')[0]}\n\n┃ ⛔ \`Violazione:\` Link ${detectedPlatform.toUpperCase()} ${isQR ? '(QR Code)' : ''}\n┃ ⚠️ \`Warn:\` *${user.antiLink2Warns}/3*\n┃ 🚫 \`Azione:\` Messaggio rimosso\n\n${footer}`,
+                    text: `✒️ *DEATH NOTE SYSTEM* \n_Tracce di propaganda umana rilevate..._\n────────────────────────────\n💀 *TARGET:* @${m.sender.split('@')[0]}\n🔗 *PIATTAFORMA:* ${detectedPlatform.toUpperCase()} ${isQR ? '(Codice QR)' : ''}\n🩸 *AMMONIZIONE:* ${user.antiLink2Warns}/3\n❌ *AZIONE:* Rimozione Traccia\n────────────────────────────\n\n𓃦 _Ancora un passo falso e scriverò il tuo nome sulla pagina._ 🍎`,
                     mentions: [m.sender]
                 })
             } else {
+                // Terzo Avvertimento ed Espulsione
                 user.antiLink2Warns = 0
                 await conn.sendMessage(m.chat, {
-                    text: `${header}\n\n🚨 *TERMINAZIONE* @${m.sender.split('@')[0]}\n\n┃ ⛔ \`Violazione:\` Spam social ripetuto\n┃ 💀 \`Sanzione:\` *ESPULSIONE*\n\n${footer}`,
+                    text: `✒️ *DEATH NOTE SYSTEM* \n_Il limite della pazienza è stato superato..._\n────────────────────────────\n💀 *TARGET:* @${m.sender.split('@')[0]}\n🚫 *VIOLAZIONE:* Spam social reiterato\n🩸 *SANZIONE:* GIUDIZIO CAPITALE (Rimozione)\n────────────────────────────\n\n_Il tuo tempo in questo spazio è scaduto._ 🍎`,
                     mentions: [m.sender]
                 })
                 if (isBotAdmin) await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
@@ -180,7 +179,7 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isSam }) {
         }
 
     } catch (error) {
-        console.error('[ANTILINK2] Errore:', error)
+        console.error('[RYUK-ANTILINK2] Errore:', error)
     }
     return false
 }
