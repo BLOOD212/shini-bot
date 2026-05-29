@@ -837,28 +837,30 @@ global.dfail = async (type, m, conn) => {
 
     const nome = m.pushName || 'sam'
     const etarandom = Math.floor(Math.random() * 21) + 13
-        const msg = {
-        sam: '🔒 𝗔𝗖𝗖𝗘𝗦𝗦𝗢 𝗥𝗜𝗦𝗘𝗥𝗩𝗔𝗧𝗢\n Solo blood puo usare sto comando.',
-        rowner: '👑 𝗕𝗢𝗦𝗦\nFratello solo i miei friend possono usare sto comando.',
-        owner: '🛡️ 𝗖𝗔𝗣𝗢\nSolo i Capo possono eseguire questo comando, mbàre.',
-        mods: '⚙️ 𝗦𝗢𝗦𝗧𝗢𝗖𝗔𝗣𝗢\nSolo i sottocapi possono ordinarlo.',
-        premium: '💎 𝗙𝗜𝗗𝗘𝗟𝗜𝗧À\nMbare, serve lo status Premium per usare questo potere.',
-        group: '👥 𝗙AMIGLIA\nQuesto comando funziona solo nel gruppo.',
-        private: '📩 𝗙ACCENDA PRIVATA\nParla direttamente con il Boss, mbare.',
-        admin: '🛠️ 𝗔𝗜𝗨𝗧𝗔𝗡𝗧𝗘\nSolo gli aiutanti del clan possono dare quest’ordine.',
-        botAdmin: '🤖 𝗩𝗜𝗚𝗜𝗟𝗘\nIl bot deve avere poteri da Admin per agire.',
-        unreg: `📛 𝗡𝗨𝗢𝗩𝗢 𝗣𝗜𝗖𝗖𝗜𝗢𝗧𝗧𝗢
-Mbare, prima ti devi registrrare.
+    const msg = {
+        sam: '𓃦 🩸 *ACCESSO NEGATO*\nSolo chi possiede il controllo supremo di Blood può tracciare questo segno.',
+        rowner: '📓 *REGISTRO BLINDATO*\nQuesto comando è concesso solo ai veri proprietari del quaderno della morte.',
+        owner: '💀 *AUTORITÀ ASSOLUTA*\nI tuoi occhi non hanno il potere di ordinare questo. Riservato agli Owner.',
+        mods: '⚙️ *MODERAZIONE*\nSolo i guardiani del registro (Moderatori) possono eseguire questa direttiva.',
+        premium: '💎 *PATTO SUPERIORE*\nUmano, ti serve lo status Premium per attingere a questo potere.',
+        group: '👥 *ERRORE DIMENSIONALE*\nQuesto comando può manifestarsi solo all\'interno di un gruppo.',
+        private: '📩 *SUSSURRO PRIVATO*\nCerte cose vanno scritte in segreto. Usa la chat privata con il bot.',
+        admin: '🛠️ *POTERE ASSENTE*\nI leader umani (Admin) di questo gruppo hanno il diritto esclusivo di usarlo.',
+        botAdmin: '𓃦 ⚠️ *SHINIGAMI IMPEDITO*\nNon posso manipolare le regole del gruppo se prima non mi nominate Admin.',
+        unreg: `📛 *ANIMA SCONOSCIUTA*
+Il tuo nome non compare nel registro delle anime. Registrati prima.
 
-Esempio:
+*Esempio:*
 .reg ${nome} ${etarandom}`,
-        restrict: '🚫 𝗭𝗢𝗡𝗔 𝗖𝗛𝗜𝗨𝗦𝗔\nFunzione momentaneamente bloccata.',
-        disabled: '🚫 𝗢𝗥𝗗𝗜𝗡𝗘 𝗦𝗢𝗦𝗣𝗘𝗦𝗢\nQuesto comando è stato disattivato.'
+        restrict: '❌ *PROTOCOLLO INIBITO*\nQuesta funzione è stata sigillata e temporaneamente bloccata.',
+        disabled: '❌ *COMANDO DISATTIVATO*\nQuesto frammento di codice è stato cancellato dal quaderno.'
     }[type]
+
     if (msg) {
-        conn.reply(m.chat, msg, m, global.rcanal).catch(e => console.error('[ERRORE] Errore in dfail:', e))
+        conn.reply(m.chat, msg, m, global.rcanal).catch(e => console.error('[Ryuk-DFail] Errore:', e))
     }
 }
+
 
 function pickRandom(list) {
     return list[Math.floor(Math.random() * list.length)]
