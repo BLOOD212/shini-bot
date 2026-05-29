@@ -9,31 +9,30 @@ const localImg = join(process.cwd(), 'menu-download.jpeg');
 
 const defaultMenu = {
   before: `
-┎━━━━━━━━━━━━━━━━━━━┑
-┃   ✧  𝐁𝐋𝐃 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃  ✧  ┃
-┖━━━━━━━━━━━━━━━━━━━┙
-┌───────────────────┐
-  👤 𝚄𝚜𝚎𝚛: %name
-  🕒 𝚄𝚙𝚝𝚒𝚖𝚎: %uptime
-  📥 𝚂𝚝𝚊𝚝𝚞𝚜: 𝚁𝚎𝚊𝚍𝚢
-└───────────────────┘
+✒️ *DEATH NOTE SYSTEM* 
+_L'umano il cui nome è scritto su questo menu..._
+────────────────────────────
+💀 *USER:* %name
+⏱️ *UPTIME:* %uptime
+🍎 *REGISTRY:* Download Module
+────────────────────────────
 
-*〘 ᴀᴄᴄᴇssɪɴɢ ᴅᴏᴡɴʟᴏᴀᴅ ɴᴏᴅᴇ... 〙*
-`.trimStart(),
-  header: '┍━━━〔 %category 〕━━━┑',
-  body: '┇ 📥  *%cmd*',
-  footer: '┕━━━━━──ׄ──ׅ──ׄ──━━━━━┙\n',
-  after: `_ʙʟᴅ-ʙᴏᴛ ɴᴇᴛᴡᴏʀᴋ ᴅᴀᴛᴀ_`
+*PANNELLO DI CONTROLLO:*`.trimStart(),
+
+  header: '\n\n  𓃦 ── %category ── 𓃥\n  ━━━━━━━━━━━━━━━━━━━━━━━━',
+  body: '  🩸 %cmd',
+  footer: '\n  ━━━━━━━━━━━━━━━━━━━━━━━━',
+  after: `\n\n_Gli umani sono davvero interessanti..._ 🍎`
 }
 
 let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
   let tags = {
-    'download': 'ᴅɪɢɪᴛᴀʟ ᴀssᴇᴛs'
+    'download': 'SYSTEM MAIN'
   }
 
   try {
     await conn.sendPresenceUpdate('composing', m.chat)
-    
+
     let name = await conn.getName(m.sender)
     let _uptime = process.uptime() * 1000
     let uptime = clockString(_uptime)
@@ -70,9 +69,9 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
 
     let text = _text.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join('|')})`, 'g'), (_, name) => '' + replace[name])
 
-    await m.react('📥')
+    await m.react('📓')
 
-    // --- INVIO COME IMMAGINE (SOSTITUITO VIDEO) ---
+    // --- INVIO COME IMMAGINE IN REPLICAZIONE RYUK ---
     await conn.sendMessage(m.chat, {
       image: { url: localImg },
       caption: text.trim(),
@@ -80,14 +79,14 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
         mentionedJid: [m.sender],
         forwardedNewsletterMessageInfo: {
           newsletterJid: '120363232743845068@newsletter',
-          newsletterName: "✧ 𝙱𝙻𝙳-𝙱𝙾𝚃 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁 ✧"
+          newsletterName: "R Y U K  P A G E"
         }
       }
     }, { quoted: m })
 
   } catch (e) {
     console.error(e)
-    conn.reply(m.chat, '❌ Error in Download Module: Check if menu-download.jpeg exists.', m)
+    conn.reply(m.chat, '❌ Errore nel registro dei download: Verifica la presenza di menu-download.jpeg.', m)
   }
 }
 
