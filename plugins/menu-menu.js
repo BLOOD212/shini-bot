@@ -9,7 +9,6 @@ const emojicategoria = {
 
 let tags = {
   main: '𓃦 ── SYSTEM MAIN ── 𓃥',
-  sicurezza: '𓃦 ── SECURITY SYSTEM ── 𓃥',
   info: '𓃦 ── DATABASE INFO ── 𓃥'
 }
 
